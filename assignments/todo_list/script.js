@@ -1,22 +1,64 @@
 
-let inputField = document.querySelector("input");  // to take value from input field
-let divClass = document.querySelector('.todos');  // to add new p tag inside div field
-let count = 0;
-function addtodo(){
+let allTodo = document.querySelectorAll("button")[0];  // All todos
+let completed = document.querySelectorAll("button")[1]  // Completed Todos
+let pending = document.querySelectorAll("button")[2] // Pending Todos
+let div = document.querySelector("div.todos")
+/* function addtodo(){
     let inputData = inputField.value;
     let ptag = document.createElement("p");
     ptag.innerHTML=inputData;
     ptag.setAttribute("key",count); 
     divClass.append(ptag);
-    inputField.value="";
+    inputField.value="New todolist!"; 
     console.log(count);
     count+=1;
+} */
+let todos=[]
 
-    // adding event listeners to check if someone clicks p tag thna to remove it
-    
-    
+async function todoFetching(){
+  try{
+    const response = await fetch(`https://jsonplaceholder.typicode.com/todos`)
+    const json = await response.json();
+    todos = json.slice(0,100);
+    console.log(todos);
+  }
+  catch(e){
+    console.log(e);
+  }
 }
-divClass.addEventListener("click",function(e){
-    console.log(e.target);
-    divClass.removeChild(e.target);
+
+allTodo.addEventListener('click', function(){
+  div.innerHTML ="";
+  todos.forEach((todo,index)=>{
+    const newTodo=document.createElement('p');
+    newTodo.setAttribute('key',index);
+    newTodo.innerHTML =todo.title;
+    div.appendChild(newTodo);
+  })
 });
+completed.addEventListener('click', function(){
+  div.innerHTML ="";
+  todos.forEach((todo,index)=>{
+    if(todo.completed===true){
+    const newTodo=document.createElement('p');
+    newTodo.setAttribute('key',index);
+    newTodo.innerHTML =todo.title;
+    div.appendChild(newTodo);
+    }
+  })
+});
+pending.addEventListener('click', function(){
+  div.innerHTML ="";
+  todos.forEach((todo,index)=>{
+    if(todo.completed===false){
+    const newTodo=document.createElement('p');
+    newTodo.setAttribute('key',index);
+    newTodo.innerHTML =todo.title;
+    div.appendChild(newTodo);
+    }
+  })
+});
+
+todoFetching();
+
+
